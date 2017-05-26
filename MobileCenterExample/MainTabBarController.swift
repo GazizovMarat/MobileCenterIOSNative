@@ -21,7 +21,8 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     let actualTypes = [HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)!,
                        HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceWalkingRunning)!,
-                       HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier.activeEnergyBurned)!]
+                       HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier.activeEnergyBurned)!,
+                       HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier.appleExerciseTime)!]
     
     public var user: User? {
         didSet {
@@ -67,7 +68,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
             }
             
             if needGenerate {
-                fillRandomData()
+                //fillRandomData()
             }
             else {
                 DispatchQueue.main.async() {
@@ -106,7 +107,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
             
             var startDateComponents = DateComponents()
             startDateComponents.day = -days
-            guard let startDate = calendar.date( byAdding: startDateComponents, to: anchorDate )?.startOfDay else {
+            guard let startDate = calendar.date( byAdding: startDateComponents, to: anchorDate )?.endOfDay else {
                 fatalError()
             }
             
@@ -118,6 +119,8 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
                 unit = HKUnit.meterUnit(with: HKMetricPrefix.kilo)
             case HKQuantityTypeIdentifier.activeEnergyBurned.rawValue:
                 unit = HKUnit.kilocalorie()
+            case HKQuantityTypeIdentifier.appleExerciseTime.rawValue:
+                unit = HKUnit.minute()
             default:
                 fatalError( "unsupported HKQuantityTypeIdentifier" )
             }
@@ -217,14 +220,14 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
             }
         }
 
-        healthStore.save( samples ) { ( completed, error ) in
+        /*healthStore.save( samples ) { ( completed, error ) in
             if let error = error {
                 print( "error: ", error )
             }
             else {
                 self.loadHealthKitData()
             }
-        }
+        }*/
     }
     
     func checkNeedGenerateHealthKitData() {
